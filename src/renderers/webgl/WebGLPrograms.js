@@ -12,6 +12,7 @@ function WebGLPrograms( renderer, extensions, capabilities ) {
 	var programs = [];
 
 	var isWebGL2 = capabilities.isWebGL2;
+	var isWebGL2Compute = capabilities.isWebGL2Compute;
 	var logarithmicDepthBuffer = capabilities.logarithmicDepthBuffer;
 	var floatVertexTextures = capabilities.floatVertexTextures;
 	var precision = capabilities.precision;
@@ -37,7 +38,7 @@ function WebGLPrograms( renderer, extensions, capabilities ) {
 	};
 
 	var parameterNames = [
-		"precision", "isWebGL2", "supportsVertexTextures", "outputEncoding", "instancing", "numMultiviewViews",
+		"precision", "isWebGL2", "isWebGL2Compute", "supportsVertexTextures", "outputEncoding", "instancing", "numMultiviewViews",
 		"map", "mapEncoding", "matcap", "matcapEncoding", "envMap", "envMapMode", "envMapEncoding", "envMapCubeUV",
 		"lightMap", "lightMapEncoding", "aoMap", "emissiveMap", "emissiveMapEncoding", "bumpMap", "normalMap", "objectSpaceNormalMap", "tangentSpaceNormalMap", "clearcoatNormalMap", "displacementMap", "specularMap",
 		"roughnessMap", "metalnessMap", "gradientMap",
@@ -176,6 +177,7 @@ function WebGLPrograms( renderer, extensions, capabilities ) {
 		var parameters = {
 
 			isWebGL2: isWebGL2,
+			isWebGL2Compute: isWebGL2Compute,
 
 			shaderID: shaderID,
 			shaderName: shaderobject.name,

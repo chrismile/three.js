@@ -59,6 +59,7 @@ function WebGLCapabilities( gl, extensions, parameters ) {
 	/* eslint-disable no-undef */
 	var isWebGL2 = ( typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext ) ||
 		( typeof WebGL2ComputeRenderingContext !== 'undefined' && gl instanceof WebGL2ComputeRenderingContext );
+	var isWebGL2Compute = ( typeof WebGL2ComputeRenderingContext !== 'undefined' && gl instanceof WebGL2ComputeRenderingContext );
 	/* eslint-enable no-undef */
 
 	var precision = parameters.precision !== undefined ? parameters.precision : 'highp';
@@ -92,6 +93,7 @@ function WebGLCapabilities( gl, extensions, parameters ) {
 	return {
 
 		isWebGL2: isWebGL2,
+		isWebGL2Compute: isWebGL2Compute,
 
 		getMaxAnisotropy: getMaxAnisotropy,
 		getMaxPrecision: getMaxPrecision,

@@ -658,30 +658,42 @@ function WebGLProgram( renderer, cacheKey, parameters ) {
 
 		var isGLSL3ShaderMaterial = false;
 
-		var versionRegex = /^\s*#version\s+300\s+es\s*\n/;
+		var versionPrefix = '#version 300 es\n';
+		// WebGL 2 supports version 3.0, WebGL 2.0 Compute supports version 3.1
+		var versionRegex300 = /^\s*#version\s+300\s+es\s*\n/;
+		var versionRegex310 = /^\s*#version\s+310\s+es\s*\n/;
 
 		if ( parameters.isShaderMaterial &&
-			vertexShader.match( versionRegex ) !== null &&
-			fragmentShader.match( versionRegex ) !== null ) {
+			vertexShader.match( versionRegex300 ) !== null &&
+			fragmentShader.match( versionRegex300 ) !== null ) {
 
 			isGLSL3ShaderMaterial = true;
 
-			vertexShader = vertexShader.replace( versionRegex, '' );
-			fragmentShader = fragmentShader.replace( versionRegex, '' );
+			vertexShader = vertexShader.replace( versionRegex300, '' );
+			fragmentShader = fragmentShader.replace( versionRegex300, '' );
+		} else if ( parameters.isWebGL2Compute &&
+			parameters.isShaderMaterial &&
+			vertexShader.match( versionRegex310 ) !== null &&
+			fragmentShader.match( versionRegex310 ) !== null ) {
 
+			isGLSL3ShaderMaterial = true;
+			versionPrefix = '#version 310 es\n';
+
+			vertexShader = vertexShader.replace( versionRegex310, '' );
+			fragmentShader = fragmentShader.replace( versionRegex310, '' );
 		}
 
 		// GLSL 3.0 conversion
 
 		prefixVertex = [
-			'#version 300 es\n',
+			versionPrefix,
 			'#define attribute in',
 			'#define varying out',
 			'#define texture2D texture'
 		].join( '\n' ) + '\n' + prefixVertex;
 
 		prefixFragment = [
-			'#version 300 es\n',
+			versionPrefix,
 			'#define varying in',
 			isGLSL3ShaderMaterial ? '' : 'out highp vec4 pc_fragColor;',
 			isGLSL3ShaderMaterial ? '' : '#define gl_FragColor pc_fragColor',
@@ -702,9 +714,9 @@ function WebGLProgram( renderer, cacheKey, parameters ) {
 		if ( numMultiviewViews > 0 ) {
 
 			prefixVertex = prefixVertex.replace(
-				'#version 300 es\n',
+				versionPrefix,
 				[
-					'#version 300 es\n',
+					versionPrefix,
 					'#extension GL_OVR_multiview2 : require',
 					'layout(num_views = ' + numMultiviewViews + ') in;',
 					'#define VIEW_ID gl_ViewID_OVR'
@@ -732,9 +744,9 @@ function WebGLProgram( renderer, cacheKey, parameters ) {
 			);
 
 			prefixFragment = prefixFragment.replace(
-				'#version 300 es\n',
+				versionPrefix,
 				[
-					'#version 300 es\n',
+					versionPrefix,
 					'#extension GL_OVR_multiview2 : require',
 					'#define VIEW_ID gl_ViewID_OVR'
 				].join( '\n' )
